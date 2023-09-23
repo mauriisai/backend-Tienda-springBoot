@@ -28,30 +28,9 @@ public class JwtController {
     @Autowired
     private JwtService jwtService;
 
-    /*@PostMapping("/authenticate")
+    @PostMapping("/authenticate")
     public JwtResponse createJwtToken(@RequestBody JwtRequest jwtRequest) throws Exception {
         System.out.println(jwtRequest.getUserName());
         return jwtService.createJwtToken(jwtRequest);
-    }
-    */
-
-    @PostMapping("/authenticate")
-    public ResponseEntity createJwtToken(@RequestBody JwtRequest jwtRequest) throws Exception {
-        System.out.println(jwtRequest.getUserName());
-        // Generamos un token con el Metodo en mencion.
-        Authentication authToken = new UsernamePasswordAuthenticationToken(jwtRequest.getUserName(),
-                jwtRequest.getUserPassword());
-
-        // Declaramos en una variable el user Autenticado.
-        var usuarioAutenticado = authenticationManager.authenticate(authToken);
-
-        // Retornamos el token.
-        if (usuarioAutenticado != null) {
-            var JWTtoken = jwtUtil.generateToken((UserDetails) usuarioAutenticado.getPrincipal());
-            System.out.println(JWTtoken);
-            return ResponseEntity.ok(new JwtResponse(JWTtoken));
-        } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
     }
 }

@@ -5,7 +5,6 @@ import com.tienda.tiendajwt.entity.JwtRequest;
 import com.tienda.tiendajwt.entity.JwtResponse;
 import com.tienda.tiendajwt.entity.User;
 import com.tienda.tiendajwt.util.JwtUtil;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,16 +18,28 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
     @Autowired
-    private UserDao userDao;
+    private LoginDetailsService loginDetailsService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    LoginDetailsService loginService;
+    private UserDao userDao;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+        String userName = jwtRequest.getUserName();
+        String userPassword = jwtRequest.getUserPassword();
+        authenticate(userName, userPassword);
+
+        final UserDetails userDetails = loginDetailsService.loadUserByUsername(userName);
+        String newGeneratedToken = jwtUtil.generateToken(userDetails);
+        User user = userDao.findById(userName).get();
+
+        return new JwtResponse(user, newGeneratedToken);
+    }
 
     private void authenticate(String userName, String userPassword) throws Exception {
         try {
