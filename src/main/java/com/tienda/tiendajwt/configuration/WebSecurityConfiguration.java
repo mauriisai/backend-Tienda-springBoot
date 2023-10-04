@@ -38,7 +38,9 @@ public class WebSecurityConfiguration {
                 // Indicar a Spring la politica de Seguridad de Session.
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .requestMatchers(HttpMethod.POST, "/authenticate","/registerNewUser")
+                .requestMatchers(HttpMethod.POST, "/authenticate","/registerNewUser",
+                        "/getAllProducts", "/deleteProductDetails/{productId}",
+                        "/getProductDetailsById/{productId}")
                 .permitAll()
 
                 // Config. para que todas las request que sean dif. a las anteriores sean Autenticadas.
